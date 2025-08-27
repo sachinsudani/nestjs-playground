@@ -1,22 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateProductDto } from './dto/create-product.dto';
+import { Product } from './interfaces/product.interface';
 
 @Injectable()
 export class ProductService {
-    private products: { id: number; name: string; price: number }[] = [{
-        id: 1,
-        name: "Apple iPhone 14",
-        price: 59000
-    }, {
-        id: 2,
-        name: "Apple MacBook Pro",
-        price: 149900
-    }];
+    private products: Product[] = [];
 
-    getAllProducts() {
+    getAllProducts(): Product[] {
         return this.products;
     }
 
-    getProductById(id: number) {
+    getProductById(id: number): Product {
         const product = this.products.find(product => product.id === id);
 
         if (!product) throw new NotFoundException('Product not found');
@@ -24,16 +18,16 @@ export class ProductService {
         return product;
     }
 
-    createProduct(product: { name: string; price: number }) {
-        const newProduct = {
+    createProduct(createProductDto: CreateProductDto): Product {
+        const newProduct: Product = {
             id: this.products.length + 1,
-            ...product
+            ...createProductDto
         };
         this.products.push(newProduct);
         return newProduct;
     }
 
-    updateProduct(id: number, product: { name: string; price: number }) {
+    updateProduct(id: number, product: { name: string; price: number }): Product {
         const index = this.products.findIndex(product => product.id === id);
 
         if (index === -1) throw new NotFoundException('Product not found');
@@ -46,13 +40,13 @@ export class ProductService {
         return this.products[index];
     }
 
-    patchProduct(id: number, data: Partial<{ name: string; price: number }>) {
+    patchProduct(id: number, data: Partial<{ name: string; price: number }>): Product {
         const product = this.getProductById(id);
         Object.assign(product, data);
         return product;
     }
 
-    deleteProduct(id: number) {
+    deleteProduct(id: number): { message: string; product: Product } {
         const index = this.products.findIndex(product => product.id === id);
 
         if (index === -1) throw new NotFoundException('Product not found');
