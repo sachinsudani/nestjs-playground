@@ -1,6 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { UppercasePipe } from 'src/common/pipes/uppercase/uppercase.pipe';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { Roles } from 'src/guards/roles/roles.decorator';
+import { Role } from 'src/guards/roles/roles.enums';
+import { RolesGuard } from 'src/guards/roles/roles.guard';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductService } from './product.service';
 
@@ -10,6 +13,8 @@ export class ProductController {
     constructor(private readonly productService: ProductService) { }
 
     @UseGuards(AuthGuard)
+    @UseGuards(RolesGuard)
+    @Roles(Role.USER)
 
     @Get()
     getAll() {
@@ -20,6 +25,8 @@ export class ProductController {
     getById(@Param('id') id: string) {
         return this.productService.getProductById(+id);
     }
+
+    @Roles(Role.ADMIN)
 
     @Post()
     create(@Body() createProductDto: CreateProductDto) {
