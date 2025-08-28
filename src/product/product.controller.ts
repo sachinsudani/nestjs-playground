@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductService } from './product.service';
+import { UppercasePipe } from 'src/common/pipes/uppercase/uppercase.pipe';
 
 @Controller('product')
 
@@ -20,6 +21,11 @@ export class ProductController {
     @Post()
     create(@Body() createProductDto: CreateProductDto) {
         return this.productService.createProduct(createProductDto);
+    }
+
+    @Post('uppercase')
+    uppercase(@Body('name', new UppercasePipe()) name: string) {
+        return { message: `Received uppercase name: ${name}` };
     }
 
     @Put(':id')
