@@ -1,12 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import { UppercasePipe } from 'src/common/pipes/uppercase/uppercase.pipe';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductService } from './product.service';
-import { UppercasePipe } from 'src/common/pipes/uppercase/uppercase.pipe';
 
 @Controller('product')
 
 export class ProductController {
     constructor(private readonly productService: ProductService) { }
+
+    @UseGuards(AuthGuard)
 
     @Get()
     getAll() {
